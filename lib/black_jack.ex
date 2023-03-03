@@ -42,7 +42,7 @@ defmodule BlackJack do
     IO.puts(" ")
     case input do
       "S" -> hit(deck, player_hand)
-      "N" -> :salir
+      "N" -> validateWhen(player_hand)
       _ ->
         IO.puts("La opción ingresada no es válida.")
         IO.puts(" ")
@@ -88,6 +88,47 @@ defmodule BlackJack do
 
   end
 
+  def validateWhen(player_hand) do
+    IO.puts("Mano cuando se dice que no")
+    IO.inspect player_hand.cards
+
+    #Conocer si el jugador tiene una carta o varias
+    space = Kernel.is_list(player_hand.cards)
+
+    # Conocer el puntaje segun la cantidad de cartas
+    size = size(space, player_hand.cards)
+    IO.puts("El puntaje es")
+    IO.inspect size
+
+    cond do
+      size > 21 ->
+        IO.puts("You lose!")
+        :lose
+        size === 21 ->
+        IO.puts("You win!")
+        :win
+        size < 21 ->
+        IO.puts("Tu puntaje es: #{size}")
+        :none
+      true ->
+        IO.puts("what")
+        :error
+    end
+
+  end
+
+  def size(space, cards) do
+    cond do
+      space !== true ->
+        Hand.card_value(cards)
+        space === true ->
+          Hand.value(cards)
+      true ->
+        IO.puts("what")
+        :error
+    end
+  end
+
   def valite(player_score, deck, player_card, updated_player_hand) do
     cond do
       player_score > 21 ->
@@ -104,5 +145,7 @@ defmodule BlackJack do
         :error
     end
   end
+
+
 
 end
