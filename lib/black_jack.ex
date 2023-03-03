@@ -79,6 +79,9 @@ defmodule BlackJack do
     #IO.puts("El puntaje del jugador es: #{player_score}")
 
     #Concer puntuación
+
+
+
     player_score = Hand.value(flatten_cards)
     IO.puts("El puntaje de #{player_hand.name} es: #{player_score}")
     IO.puts("")
@@ -120,7 +123,7 @@ defmodule BlackJack do
   def size(space, cards) do
     cond do
       space !== true ->
-        Hand.card_value(cards)
+        yuca(cards)
         space === true ->
           Hand.value(cards)
       true ->
@@ -128,6 +131,21 @@ defmodule BlackJack do
         :error
     end
   end
+
+  def yuca(card) do
+    cond do
+      card.value ===  :hearts -> 10
+      card.value ===  :diamonds -> 10
+      card.value === :clubs -> 10
+      card.value ===  :spades -> 10
+      card.value ===  :ace -> 11
+      true ->
+        IO.puts("what")
+        :error
+    end
+  end
+
+
 
   def valite(player_score, deck, player_card, updated_player_hand) do
     cond do

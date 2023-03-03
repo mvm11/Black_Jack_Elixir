@@ -9,6 +9,8 @@ defmodule Hand do
   end
 
   def value(cards) do
+
+
     values = cards |> Enum.map(&card_value/1)
     aces = values |> Enum.filter(&(&1 == 1))
     non_aces = values |> Enum.reject(&(&1 == 1))
@@ -29,7 +31,7 @@ defmodule Hand do
   def card_value(card) do
     case card.value do
       :ace ->
-      if Hand.value(%Hand{cards: [card]}) <= 10 do
+      if Hand.value([card]) <= 10 do
         11
       else
         1
