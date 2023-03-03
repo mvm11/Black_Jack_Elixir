@@ -8,8 +8,8 @@ defmodule Hand do
     %Hand{name: name, cards: cards}
   end
 
-  def value(hand) do
-    values = hand.cards |> Enum.map(&card_value/1)
+  def value(cards) do
+    values = cards |> Enum.map(&card_value/1)
     aces = values |> Enum.filter(&(&1 == 1))
     non_aces = values |> Enum.reject(&(&1 == 1))
     non_ace_value = non_aces |> Enum.sum()
