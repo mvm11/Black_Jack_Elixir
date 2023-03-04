@@ -1,6 +1,3 @@
-
-import Card
-
 defmodule Hand do
   defstruct score: 0, cards: []
 
