@@ -8,6 +8,9 @@ defmodule BlackJack do
   # Crea una Baraja francesa desordenada
   deck = Deck.new_deck() |> Deck.shuffle()
 
+  # Crea un número para la ronda
+  round_number = 1
+
   # _________________________________________________________________________________
 
   # S E T U P   J U G A D O R
@@ -55,6 +58,7 @@ defmodule BlackJack do
   IO.puts("  ")
   IO.puts("🃏 B L A C K   J A C K 🃏")
   IO.puts("  ")
+  IO.puts("Ronda numero: #{round_number}")
   IO.puts("-----------------------------------------------------")
   IO.puts("  ")
   # Muestra resumen jugador
@@ -84,7 +88,7 @@ defmodule BlackJack do
 
   # P R E G U N T A
 
-  ask_for_option(new_deck, player_hand, cpu_hand)
+  ask_for_option(round_number, new_deck, player_hand, cpu_hand)
 
   end
 
@@ -103,16 +107,16 @@ defmodule BlackJack do
     end
   end
 
-  def ask_for_option(deck, player_hand, cpu_hand) do
+  def ask_for_option(round_number, deck, player_hand, cpu_hand) do
     input = IO.gets("¿Desea tomar una nueva carta? (s/n): ") |> String.trim() |> String.upcase()
     IO.puts(" ")
     case input do
-      "S" -> hit(deck, player_hand, cpu_hand)
+      "S" -> hit(round_number, deck, player_hand, cpu_hand)
       "N" -> endGame(player_hand, cpu_hand)
       _ ->
         IO.puts("La opción ingresada no es válida.")
         IO.puts(" ")
-        ask_for_option(deck, player_hand, cpu_hand)
+        ask_for_option(round_number, deck, player_hand, cpu_hand)
     end
   end
 
@@ -199,10 +203,12 @@ defmodule BlackJack do
   end
 
 
-  def get_summary_player(new_player_hand) do
+  def get_summary_player(new_round_number, new_player_hand) do
     # R E S U M E N   R O N D A   J U G A D O R
     IO.puts("  ")
     IO.puts("🃏 B L A C K   J A C K 🃏")
+    IO.puts("  ")
+    IO.puts("Ronda numero: #{new_round_number}")
     IO.puts("  ")
     IO.puts("-----------------------------------------------------")
     IO.puts("  ")
@@ -236,7 +242,13 @@ defmodule BlackJack do
     IO.puts("  ")
   end
 
-  def hit(deck, player_hand, cpu_hand) do
+  def hit(round_number, deck, player_hand, cpu_hand) do
+
+  # _________________________________________________________________________________
+
+  # S E T U P
+
+    new_round_number = round_number + 1
 
   # _________________________________________________________________________________
 
@@ -262,7 +274,7 @@ defmodule BlackJack do
     new_player_hand = get_new_player_hand(player_total_value, new_player_cards)
 
     # R E S U M E N   R O N D A   J U G A D O R
-    get_summary_player(new_player_hand)
+    get_summary_player(new_round_number, new_player_hand)
 
 
     # "Actualiza" la lista deck
@@ -296,21 +308,24 @@ defmodule BlackJack do
     # "Actualiza" la lista deck
     new_deck = List.delete(n_deck, cpu_card)
 
-    validate_round(new_deck, new_player_hand, new_cpu_hand)
+    validate_round(new_round_number, new_deck, new_player_hand, new_cpu_hand)
 
   end
 
-  def validate_round(n_deck, new_player_hand, new_cpu_hand) do
+  def validate_round(new_round_number, n_deck, new_player_hand, new_cpu_hand) do
     cond do
+      new_player_hand.score === 21 and new_cpu_hand.score === 21 ->
+        IO.puts("Empate debido a que el puntaje del jugador 21 y el de la cpu también")
+        :tie
+      new_player_hand.score > 21 and new_cpu_hand.score > 21 ->
+        IO.puts("Empate ambos superan 21")
+        :tie
       new_cpu_hand.score > 21 ->
         IO.puts("Ganaste debido a que la CPU tiene un puntaje mayor a 21")
         :win
       new_player_hand.score === 21 ->
         IO.puts("Ganaste debido a que tu puntaje es 21")
         :win
-      new_player_hand.score === 21 and new_cpu_hand.score === 21 ->
-        IO.puts("Empate debido a que el puntaje del jugador 21 y el de la cpu también")
-        :tie
       new_player_hand.score > 21 ->
         IO.puts("Perdiste porque tu puntaje supera 21")
         :lose
@@ -318,7 +333,7 @@ defmodule BlackJack do
         IO.puts("Perdiste porque el puntaje de la cpu es 21")
         :lose
       true ->
-        ask_for_option(n_deck, new_player_hand, new_cpu_hand)
+        ask_for_option(new_round_number, n_deck, new_player_hand, new_cpu_hand)
     end
   end
 
